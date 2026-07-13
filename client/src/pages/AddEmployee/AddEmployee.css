@@ -1,0 +1,45 @@
+.add-employee {
+  max-width: 720px;
+  animation: fadeIn 0.3s ease;
+}
+
+.add-employee__header {
+  margin-bottom: 24px;
+}
+
+.add-employee__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: all var(--transition-fast);
+}
+
+.add-employee__back:hover {
+  color: var(--color-gray-700);
+  background: var(--color-gray-100);
+}
+
+.add-employee__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.add-employee__subtitle {
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  margin-top: 4px;
+}
+
+.add-employee__form-wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}

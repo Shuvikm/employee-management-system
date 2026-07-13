@@ -1,0 +1,123 @@
+.stats-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.stats-card--primary::before { background: var(--color-primary); }
+.stats-card--success::before { background: var(--color-success); }
+.stats-card--danger::before { background: var(--color-danger); }
+.stats-card--warning::before { background: var(--color-warning); }
+.stats-card--info::before { background: var(--color-info); }
+
+.stats-card--clickable:hover::before {
+  opacity: 1;
+}
+
+.stats-card--clickable {
+  cursor: pointer;
+}
+
+.stats-card--clickable:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stats-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-card__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stats-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  line-height: 1.1;
+}
+
+.stats-card__trend {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.stats-card__trend--up {
+  color: var(--color-success);
+}
+
+.stats-card__trend--down {
+  color: var(--color-danger);
+}
+
+.stats-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.stats-card--primary .stats-card__icon {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.stats-card--success .stats-card__icon {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.stats-card--danger .stats-card__icon {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.stats-card--warning .stats-card__icon {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.stats-card--info .stats-card__icon {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+@media (max-width: 768px) {
+  .stats-card {
+    padding: 20px;
+  }
+
+  .stats-card__value {
+    font-size: 1.5rem;
+  }
+}

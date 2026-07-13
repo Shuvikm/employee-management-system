@@ -1,0 +1,143 @@
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-filter__search {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.search-filter__search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+
+.search-filter__input {
+  width: 100%;
+  height: 42px;
+  padding: 0 36px 0 38px;
+  font-size: 0.875rem;
+  color: var(--color-gray-900);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.search-filter__input::placeholder {
+  color: var(--color-gray-400);
+}
+
+.search-filter__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-filter__clear-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--color-gray-400);
+  transition: all var(--transition-fast);
+}
+
+.search-filter__clear-btn:hover {
+  color: var(--color-gray-600);
+  background: var(--color-gray-100);
+}
+
+.search-filter__filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-filter__select-wrapper {
+  position: relative;
+}
+
+.search-filter__select-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+
+.search-filter__select {
+  height: 42px;
+  padding: 0 32px 0 34px;
+  font-size: 0.8125rem;
+  color: var(--color-gray-700);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 150px;
+  transition: all var(--transition-fast);
+}
+
+.search-filter__select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-filter__reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  color: var(--color-gray-400);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: all var(--transition-fast);
+}
+
+.search-filter__reset:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+@media (max-width: 768px) {
+  .search-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filter__search {
+    min-width: 0;
+  }
+
+  .search-filter__filters {
+    flex-wrap: wrap;
+  }
+
+  .search-filter__select {
+    min-width: 130px;
+  }
+}
