@@ -20,7 +20,16 @@ const Employee = mongoose.model('Employee', employeeSchema);
 const EmployeeModel = {
   async getAll(filters = {}) {
     const query = buildFilterQuery(filters);
-    let mQuery = Employee.find(query).sort({ created_at: -1 });
+    
+    let sortQuery = { created_at: -1 };
+    if (filters.sort) {
+      if (filters.sort === 'name_asc') sortQuery = { full_name: 1 };
+      else if (filters.sort === 'name_desc') sortQuery = { full_name: -1 };
+      else if (filters.sort === 'date_desc') sortQuery = { joining_date: -1 };
+      else if (filters.sort === 'date_asc') sortQuery = { joining_date: 1 };
+    }
+
+    let mQuery = Employee.find(query).sort(sortQuery);
 
     if (filters.page && filters.pageSize) {
       const page = Math.max(1, parseInt(filters.page, 10));

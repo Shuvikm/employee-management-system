@@ -37,6 +37,8 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const [activities, setActivities] = useState([]);
+
   const loadDashboardData = useCallback(async () => {
     try {
       setLoading(true);
@@ -57,6 +59,50 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadDashboardData();
+  }, [loadDashboardData]);
+
+  // Socket.IO real-time synchronization
+  useEffect(() => {
+    let timeoutId;
+    let currentClientId = '';
+
+    const handleDashboardChange = (payload, type) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        loadDashboardData();
+      }, 300);
+
+      // Extract employee name
+      let name = 'An employee';
+      if (payload && payload.data) name = payload.data.full_name;
+      
+      const newActivity = {
+        id: Date.now() + Math.random(),
+        message: `Employee ${name} was ${type}`,
+        time: new Date().toLocaleTimeString(),
+      };
+
+      setActivities(prev => [newActivity, ...prev].slice(0, 10));
+    };
+
+    import('../../socket').then(({ socket, CLIENT_ID }) => {
+      currentClientId = CLIENT_ID;
+      
+      const onCreated = (p) => handleDashboardChange(p, 'added');
+      const onUpdated = (p) => handleDashboardChange(p, 'updated');
+      const onDeleted = (p) => handleDashboardChange(p, 'deleted');
+
+      socket.on('employee:created', onCreated);
+      socket.on('employee:updated', onUpdated);
+      socket.on('employee:deleted', onDeleted);
+
+      return () => {
+        socket.off('employee:created', onCreated);
+        socket.off('employee:updated', onUpdated);
+        socket.off('employee:deleted', onDeleted);
+        clearTimeout(timeoutId);
+      };
+    });
   }, [loadDashboardData]);
 
   if (loading) return <PageLoader />;
@@ -138,53 +184,65 @@ export default function Dashboard() {
         </>
       )}
 
-      <div className="dashboard__section">
-        <div className="dashboard__section-header">
-          <h2 className="dashboard__section-title">Recent Employees</h2>
-          <button className="dashboard__view-all" onClick={() => navigate('/employees')}>
-            View All
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
-
-        {recentEmployees.length === 0 ? (
-          <div className="dashboard__empty">
-            <div className="dashboard__empty-icon">
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4"/>
-                <path d="M24 16v8M24 28v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <p>No employees yet. Start by adding your first employee!</p>
-            <button className="btn btn--primary" onClick={() => navigate('/employees/add')} style={{ marginTop: 12 }}>
-              Add Employee
+      <div className="dashboard__panels" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '32px' }}>
+        <div className="dashboard__section" style={{ marginTop: 0 }}>
+          <div className="dashboard__section-header">
+            <h2 className="dashboard__section-title">Recent Employees</h2>
+            <button className="dashboard__view-all" onClick={() => navigate('/employees')}>
+              View All
             </button>
           </div>
-        ) : (
-          <div className="dashboard__recent-list">
-            {recentEmployees.map((employee, index) => (
-              <div
-                key={employee.id}
-                className="dashboard__recent-item"
-                style={{ animationDelay: `${index * 50}ms` }}
-                onClick={() => navigate(`/employees/edit/${employee.id}`)}
-              >
-                <div className="dashboard__recent-avatar">
-                  {employee.full_name.charAt(0).toUpperCase()}
+
+          {recentEmployees.length === 0 ? (
+            <div className="dashboard__empty">
+              <p>No employees yet. Start by adding your first employee!</p>
+            </div>
+          ) : (
+            <div className="dashboard__recent-list">
+              {recentEmployees.map((employee, index) => (
+                <div
+                  key={employee.id || employee._id}
+                  className="dashboard__recent-item"
+                  onClick={() => navigate(`/employees/edit/${employee.id || employee._id}`)}
+                >
+                  <div className="dashboard__recent-avatar">
+                    {employee.full_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="dashboard__recent-info">
+                    <span className="dashboard__recent-name">{employee.full_name}</span>
+                    <span className="dashboard__recent-meta">{employee.department} • {employee.designation}</span>
+                  </div>
+                  <span className={`dashboard__recent-status dashboard__recent-status--${employee.status.toLowerCase()}`}>
+                    {employee.status}
+                  </span>
                 </div>
-                <div className="dashboard__recent-info">
-                  <span className="dashboard__recent-name">{employee.full_name}</span>
-                  <span className="dashboard__recent-meta">{employee.department} • {employee.designation}</span>
-                </div>
-                <span className={`dashboard__recent-status dashboard__recent-status--${employee.status.toLowerCase()}`}>
-                  {employee.status}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="dashboard__section" style={{ marginTop: 0 }}>
+          <div className="dashboard__section-header">
+            <h2 className="dashboard__section-title">Recent Activity</h2>
           </div>
-        )}
+
+          {activities.length === 0 ? (
+            <div className="dashboard__empty">
+              <p>No recent activity in this session.</p>
+            </div>
+          ) : (
+            <div className="dashboard__recent-list">
+              {activities.map((activity) => (
+                <div key={activity.id} className="dashboard__recent-item" style={{ cursor: 'default' }}>
+                  <div className="dashboard__recent-info">
+                    <span className="dashboard__recent-name">{activity.message}</span>
+                    <span className="dashboard__recent-meta">{activity.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

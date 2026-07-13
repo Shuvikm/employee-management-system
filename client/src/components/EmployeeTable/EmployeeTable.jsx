@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '../StatusBadge/StatusBadge';
 import { formatDate, formatMobile, copyToClipboard } from '../../utils/helpers';
-import { useToast } from '../Toast/Toast';
+import { useToast } from '../../context/ToastContext';
 import './EmployeeTable.css';
 
 export default function EmployeeTable({

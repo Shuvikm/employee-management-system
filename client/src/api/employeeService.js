@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '../constants';
+import { CLIENT_ID } from '../socket';
 
 class ApiError extends Error {
   constructor(message, status, errors) {
@@ -34,6 +35,7 @@ const EmployeeService = {
     if (filters.search) params.append('search', filters.search);
     if (filters.department) params.append('department', filters.department);
     if (filters.status) params.append('status', filters.status);
+    if (filters.sort) params.append('sort', filters.sort);
     if (filters.page) params.append('page', filters.page);
     if (filters.pageSize) params.append('pageSize', filters.pageSize);
 
@@ -80,7 +82,10 @@ const EmployeeService = {
   async create(employeeData) {
     const response = await fetch(`${API_BASE_URL}/employees`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Client-ID': CLIENT_ID 
+      },
       body: JSON.stringify(employeeData),
     });
     return handleResponse(response);
@@ -95,7 +100,10 @@ const EmployeeService = {
   async update(id, employeeData) {
     const response = await fetch(`${API_BASE_URL}/employees/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Client-ID': CLIENT_ID 
+      },
       body: JSON.stringify(employeeData),
     });
     return handleResponse(response);
@@ -109,6 +117,7 @@ const EmployeeService = {
   async delete(id) {
     const response = await fetch(`${API_BASE_URL}/employees/${id}`, {
       method: 'DELETE',
+      headers: { 'X-Client-ID': CLIENT_ID },
     });
     return handleResponse(response);
   },
@@ -121,7 +130,10 @@ const EmployeeService = {
   async deleteBatch(ids) {
     const response = await fetch(`${API_BASE_URL}/employees/batch`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Client-ID': CLIENT_ID 
+      },
       body: JSON.stringify({ ids }),
     });
     return handleResponse(response);

@@ -7,7 +7,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import StatusBadge from '../../components/StatusBadge/StatusBadge';
 import { PageLoader } from '../../components/LoadingSpinner/LoadingSpinner';
-import { useToast } from '../../components/Toast/Toast';
+import { useToast } from '../../context/ToastContext';
 import EmployeeService from '../../api/employeeService';
 import { debounce, exportToCSV, formatDate, formatMobile } from '../../utils/helpers';
 import useKeyboardShortcuts from '../../hooks/useKeyboardShortcuts';
@@ -39,6 +39,7 @@ export default function EmployeeList() {
     search: searchParams.get('search') || '',
     department: searchParams.get('department') || '',
     status: searchParams.get('status') || '',
+    sort: searchParams.get('sort') || '',
   });
   const pageRef = useRef(1);
   const pageSizeRef = useRef(PAGE_SIZE_DEFAULT);
@@ -69,6 +70,7 @@ export default function EmployeeList() {
         search: effectiveFilters.search || undefined,
         department: effectiveFilters.department || undefined,
         status: effectiveFilters.status || undefined,
+        sort: effectiveFilters.sort || undefined,
         page: currentPage,
         pageSize: currentSize,
       });
@@ -95,6 +97,7 @@ export default function EmployeeList() {
     if (filters.search) params.set('search', filters.search);
     if (filters.department) params.set('department', filters.department);
     if (filters.status) params.set('status', filters.status);
+    if (filters.sort) params.set('sort', filters.sort);
     if (page > 1) params.set('page', page);
     setSearchParams(params, { replace: true });
   }, [filters, page, setSearchParams]);
@@ -131,8 +134,16 @@ export default function EmployeeList() {
     loadEmployees(newFilters, 1, pageSize);
   };
 
+  const handleSortChange = (value) => {
+    const newFilters = { ...filtersRef.current, sort: value };
+    filtersRef.current = newFilters;
+    setFilters(newFilters);
+    setPage(1);
+    loadEmployees(newFilters, 1, pageSize);
+  };
+
   const handleClearFilters = () => {
-    const cleared = { search: '', department: '', status: '' };
+    const cleared = { search: '', department: '', status: '', sort: '' };
     filtersRef.current = cleared;
     setFilters(cleared);
     setPage(1);
@@ -271,6 +282,36 @@ export default function EmployeeList() {
     addToast('Employees exported to CSV', 'success');
   };
 
+  // Socket.IO real-time synchronization
+  useEffect(() => {
+    let timeoutId;
+    
+    const handleEmployeeChange = (payload) => {
+      // Show toast if from another client
+      if (payload && payload.originClientId !== import('../../socket').then(m => m.CLIENT_ID)) {
+        // We'll handle toasts centrally, here just reload
+      }
+      
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        loadEmployees(filtersRef.current, pageRef.current, pageSizeRef.current, false);
+      }, 300);
+    };
+
+    import('../../socket').then(({ socket }) => {
+      socket.on('employee:created', handleEmployeeChange);
+      socket.on('employee:updated', handleEmployeeChange);
+      socket.on('employee:deleted', handleEmployeeChange);
+
+      return () => {
+        socket.off('employee:created', handleEmployeeChange);
+        socket.off('employee:updated', handleEmployeeChange);
+        socket.off('employee:deleted', handleEmployeeChange);
+        clearTimeout(timeoutId);
+      };
+    });
+  }, [loadEmployees]);
+
   // Keyboard shortcuts
   const shortcuts = {
     'Ctrl+n': () => navigate('/employees/add'),
@@ -288,7 +329,7 @@ export default function EmployeeList() {
   };
   useKeyboardShortcuts(shortcuts);
 
-  const hasAnyFilter = filters.search || filters.department || filters.status;
+  const hasAnyFilter = filters.search || filters.department || filters.status || filters.sort;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -360,6 +401,8 @@ export default function EmployeeList() {
           onDepartmentChange={handleDepartmentChange}
           status={filters.status}
           onStatusChange={handleStatusChange}
+          sort={filters.sort}
+          onSortChange={handleSortChange}
           onClear={handleClearFilters}
         />
       </div>

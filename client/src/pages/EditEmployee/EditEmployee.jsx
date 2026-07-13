@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EmployeeForm from '../../components/EmployeeForm/EmployeeForm';
-import { useToast } from '../../components/Toast/Toast';
+import { useToast } from '../../context/ToastContext';
 import { PageLoader } from '../../components/LoadingSpinner/LoadingSpinner';
 import EmployeeService, { ApiError } from '../../api/employeeService';
 import './EditEmployee.css';

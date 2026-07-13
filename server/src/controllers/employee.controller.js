@@ -8,12 +8,13 @@ const EmployeeController = {
    */
   async getAll(req, res, next) {
     try {
-      const { search, department, status, page, pageSize } = req.query;
+      const { search, department, status, sort, page, pageSize } = req.query;
       const filters = {};
 
       if (search) filters.search = search.trim();
       if (department) filters.department = department.trim();
       if (status) filters.status = status.trim();
+      if (sort) filters.sort = sort.trim();
       if (page) filters.page = page;
       if (pageSize) filters.pageSize = pageSize;
 
@@ -120,6 +121,14 @@ const EmployeeController = {
 
       const employee = await EmployeeModel.create(validatedBody);
 
+      // Emit socket event
+      if (req.io) {
+        req.io.emit('employee:created', { 
+          data: employee, 
+          originClientId: req.headers['x-client-id'] 
+        });
+      }
+
       return res.status(HTTP_STATUS.CREATED).json({
         success: true,
         message: 'Employee created successfully',
@@ -167,6 +176,14 @@ const EmployeeController = {
 
       const updated = await EmployeeModel.update(id, validatedBody);
 
+      // Emit socket event
+      if (req.io) {
+        req.io.emit('employee:updated', { 
+          data: updated, 
+          originClientId: req.headers['x-client-id'] 
+        });
+      }
+
       return res.status(HTTP_STATUS.OK).json({
         success: true,
         message: 'Employee updated successfully',
@@ -196,6 +213,14 @@ const EmployeeController = {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
           success: false,
           message: ERROR_MESSAGES.EMPLOYEE_NOT_FOUND,
+        });
+      }
+
+      // Emit socket event
+      if (req.io) {
+        req.io.emit('employee:deleted', { 
+          id, 
+          originClientId: req.headers['x-client-id'] 
         });
       }
 
@@ -231,6 +256,14 @@ const EmployeeController = {
       }
 
       const deleted = await EmployeeModel.deleteMany(validIds);
+
+      // Emit socket event
+      if (req.io && deleted > 0) {
+        validIds.forEach(id => req.io.emit('employee:deleted', { 
+          id, 
+          originClientId: req.headers['x-client-id'] 
+        }));
+      }
 
       return res.status(HTTP_STATUS.OK).json({
         success: true,

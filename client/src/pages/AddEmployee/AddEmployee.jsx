@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmployeeForm from '../../components/EmployeeForm/EmployeeForm';
-import { useToast } from '../../components/Toast/Toast';
+import { useToast } from '../../context/ToastContext';
 import EmployeeService, { ApiError } from '../../api/employeeService';
 import './AddEmployee.css';
 

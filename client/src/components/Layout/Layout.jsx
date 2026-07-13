@@ -1,10 +1,59 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+import { useToast } from '../../context/ToastContext';
 import './Layout.css';
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const { addToast } = useToast();
+
+  React.useEffect(() => {
+    let currentClientId = '';
+
+    import('../../socket').then(({ socket, CLIENT_ID }) => {
+      currentClientId = CLIENT_ID;
+      setIsConnected(socket.connected);
+
+      const onConnect = () => setIsConnected(true);
+      const onDisconnect = () => setIsConnected(false);
+
+      const onCreated = (p) => {
+        if (p && p.originClientId !== currentClientId) {
+          const name = p.data ? p.data.full_name : 'An employee';
+          addToast(`${name} was added by someone else`, 'success');
+        }
+      };
+
+      const onUpdated = (p) => {
+        if (p && p.originClientId !== currentClientId) {
+          const name = p.data ? p.data.full_name : 'An employee';
+          addToast(`${name} was updated`, 'success');
+        }
+      };
+
+      const onDeleted = (p) => {
+        if (p && p.originClientId !== currentClientId) {
+          addToast('An employee was deleted', 'success');
+        }
+      };
+
+      socket.on('connect', onConnect);
+      socket.on('disconnect', onDisconnect);
+      socket.on('employee:created', onCreated);
+      socket.on('employee:updated', onUpdated);
+      socket.on('employee:deleted', onDeleted);
+
+      return () => {
+        socket.off('connect', onConnect);
+        socket.off('disconnect', onDisconnect);
+        socket.off('employee:created', onCreated);
+        socket.off('employee:updated', onUpdated);
+        socket.off('employee:deleted', onDeleted);
+      };
+    });
+  }, [addToast]);
 
   return (
     <div className="layout">
@@ -24,6 +73,10 @@ export default function Layout() {
           </button>
 
           <div className="layout__header-right">
+            <div className={`layout__socket-status ${isConnected ? 'connected' : 'disconnected'}`}>
+              <span className="status-dot"></span>
+              {isConnected ? 'Live Connected' : 'Reconnecting...'}
+            </div>
             <Link to="/" className="layout__header-logo">
               <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
                 <rect width="32" height="32" rx="8" fill="var(--color-primary)"/>

@@ -9,9 +9,11 @@ export default function SearchFilter({
   onDepartmentChange,
   status,
   onStatusChange,
+  sort,
+  onSortChange,
   onClear,
 }) {
-  const hasFilters = search || department || status;
+  const hasFilters = search || department || status || sort;
 
   return (
     <div className="search-filter">
@@ -70,6 +72,21 @@ export default function SearchFilter({
             <option value="">All Status</option>
             <option value={EMPLOYEE_STATUS.ACTIVE}>Active</option>
             <option value={EMPLOYEE_STATUS.INACTIVE}>Inactive</option>
+          </select>
+        </div>
+
+        <div className="search-filter__select-wrapper">
+          <select
+            value={sort}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="search-filter__select"
+            aria-label="Sort by"
+          >
+            <option value="">Sort by...</option>
+            <option value="name_asc">Name (A-Z)</option>
+            <option value="name_desc">Name (Z-A)</option>
+            <option value="date_desc">Newest Joining Date</option>
+            <option value="date_asc">Oldest Joining Date</option>
           </select>
         </div>
 
