@@ -6,16 +6,16 @@ import { useToast } from '../../context/ToastContext';
 import './EmployeeTable.css';
 
 export default function EmployeeTable({
-  employees,
-  loading,
-  selectedIds,
+  employees = [],
+  loading = false,
+  selectedIds = [],
   onSelect,
   onSelectAll,
   onEdit,
   onDelete,
   onView,
-  allSelected,
-  hasSomeSelected,
+  allSelected = false,
+  hasSomeSelected = false,
 }) {
   const navigate = useNavigate();
   const { addToast } = useToast();
