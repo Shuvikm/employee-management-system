@@ -256,7 +256,7 @@
   color: white;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .employee-list__header {
     flex-direction: column;
   }

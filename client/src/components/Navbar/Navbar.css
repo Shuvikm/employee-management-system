@@ -19,9 +19,33 @@
 .navbar__brand {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 20px 20px 24px;
   border-bottom: 1px solid var(--color-border-light);
+}
+
+.navbar__brand-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--color-gray-500);
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.navbar__close-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-gray-900);
 }
 
 .navbar__logo {
@@ -175,5 +199,9 @@
     background: rgba(0, 0, 0, 0.4);
     z-index: 999;
     animation: fadeIn 0.15s ease;
+  }
+  
+  .navbar__close-btn {
+    display: flex;
   }
 }

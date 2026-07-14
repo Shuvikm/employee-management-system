@@ -32,7 +32,7 @@
 
 .dashboard__stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-bottom: 24px;
 }
@@ -224,9 +224,5 @@
 
   .dashboard__title {
     font-size: 1.375rem;
-  }
-
-  .dashboard__stats {
-    grid-template-columns: 1fr;
   }
 }

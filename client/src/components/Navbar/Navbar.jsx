@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '../../utils/helpers';
 import { useTheme } from '../../context/ThemeContext';
@@ -42,6 +42,26 @@ const NAV_ITEMS = [
 export default function Navbar({ isOpen, onClose }) {
   const { isDark, toggleTheme } = useTheme();
 
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleEscape);
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
   return (
     <>
       {/* Mobile overlay */}
@@ -49,17 +69,26 @@ export default function Navbar({ isOpen, onClose }) {
 
       <aside className={cn('navbar', { 'navbar--open': isOpen })}>
         <div className="navbar__brand">
-          <div className="navbar__logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="var(--color-primary)"/>
-              <path d="M16 10c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z" fill="white"/>
-              <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+          <div className="navbar__brand-left">
+            <div className="navbar__logo">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="var(--color-primary)"/>
+                <path d="M16 10c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z" fill="white"/>
+                <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div className="navbar__brand-text">
+              <span className="navbar__brand-title">Employee</span>
+              <span className="navbar__brand-subtitle">Management</span>
+            </div>
+          </div>
+          
+          <button className="navbar__close-btn" onClick={onClose} aria-label="Close menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-          </div>
-          <div className="navbar__brand-text">
-            <span className="navbar__brand-title">Employee</span>
-            <span className="navbar__brand-subtitle">Management</span>
-          </div>
+          </button>
         </div>
 
         <nav className="navbar__nav">
