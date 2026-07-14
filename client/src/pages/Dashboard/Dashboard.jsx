@@ -206,14 +206,14 @@ export default function Dashboard() {
                   onClick={() => navigate(`/employees/edit/${employee.id || employee._id}`)}
                 >
                   <div className="dashboard__recent-avatar">
-                    {employee.full_name.charAt(0).toUpperCase()}
+                    {(employee.full_name || '?').charAt(0).toUpperCase()}
                   </div>
                   <div className="dashboard__recent-info">
                     <span className="dashboard__recent-name">{employee.full_name}</span>
                     <span className="dashboard__recent-meta">{employee.department} • {employee.designation}</span>
                   </div>
-                  <span className={`dashboard__recent-status dashboard__recent-status--${employee.status.toLowerCase()}`}>
-                    {employee.status}
+                  <span className={`dashboard__recent-status dashboard__recent-status--${(employee.status || 'inactive').toLowerCase()}`}>
+                    {employee.status || 'Unknown'}
                   </span>
                 </div>
               ))}

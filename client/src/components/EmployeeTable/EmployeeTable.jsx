@@ -102,10 +102,10 @@ export default function EmployeeTable({
                 <td>
                   <div className="employee-table__name-cell" onClick={() => onView?.(employee.id)}>
                     <div className="employee-table__avatar">
-                      {employee.full_name.charAt(0).toUpperCase()}
+                      {(employee.full_name || '?').charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <span className="employee-table__name">{employee.full_name}</span>
+                      <span className="employee-table__name">{employee.full_name || 'Unknown Employee'}</span>
                     </div>
                   </div>
                 </td>
@@ -220,8 +220,8 @@ export default function EmployeeTable({
                   <span className="employee-table__checkbox-custom" />
                 </label>
                 <div className="employee-card__name-badge">
-                  <span className="employee-card__name" onClick={() => onView?.(employee.id)}>{employee.full_name}</span>
-                  <StatusBadge status={employee.status} />
+                  <h3 className="employee-card__name" onClick={() => onView?.(employee.id)}>{employee.full_name || 'Unknown Employee'}</h3>
+                  <StatusBadge status={employee.status || 'Inactive'} />
                 </div>
               </div>
               

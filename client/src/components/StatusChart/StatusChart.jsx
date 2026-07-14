@@ -70,7 +70,7 @@ export default function StatusChart({ active = 0, inactive = 0 }) {
                 stroke="#EF4444"
                 strokeWidth="20"
                 strokeDasharray={`${inactiveLength} ${circumference - inactiveLength}`}
-                strokeDashoffset={-(activeLength + inactiveOffset)}
+                strokeDashoffset={-(activeLength + 0)}
                 strokeLinecap="round"
                 transform="rotate(-90 70 70)"
                 className="status-chart__arc"

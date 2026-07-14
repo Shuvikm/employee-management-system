@@ -467,11 +467,11 @@ export default function EmployeeList() {
           <div className="employee-list__details">
             <div className="employee-list__details-header">
               <div className="employee-list__details-avatar">
-                {viewModal.employee.full_name.charAt(0).toUpperCase()}
+                {(viewModal.employee.full_name || '?').charAt(0).toUpperCase()}
               </div>
               <div>
-                <h3 className="employee-list__details-name">{viewModal.employee.full_name}</h3>
-                <StatusBadge status={viewModal.employee.status} />
+                <h3 className="employee-list__details-name">{viewModal.employee.full_name || 'Unknown Employee'}</h3>
+                <StatusBadge status={viewModal.employee.status || 'Inactive'} />
               </div>
             </div>
 
