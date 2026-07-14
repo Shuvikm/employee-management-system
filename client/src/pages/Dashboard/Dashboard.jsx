@@ -184,7 +184,7 @@ export default function Dashboard() {
         </>
       )}
 
-      <div className="dashboard__panels" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '32px' }}>
+      <div className="dashboard__panels">
         <div className="dashboard__section" style={{ marginTop: 0 }}>
           <div className="dashboard__section-header">
             <h2 className="dashboard__section-title">Recent Employees</h2>

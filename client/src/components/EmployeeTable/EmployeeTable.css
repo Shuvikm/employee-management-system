@@ -315,6 +315,11 @@
   100% { background-position: -200% 0; }
 }
 
+/* Employee Cards Styling */
+.employee-cards {
+  display: none; /* Default hidden on desktop, overriden below */
+}
+
 /* Mobile responsive */
 @media (max-width: 767px) {
   .employee-table {
@@ -334,10 +339,7 @@
   }
 }
 
-/* Employee Cards Styling */
-.employee-cards {
-  display: none; /* Default hidden on desktop, overriden above */
-}
+
 
 .employee-cards__select-all {
   display: flex;
